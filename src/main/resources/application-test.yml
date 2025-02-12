@@ -4,10 +4,10 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password: password
-  h2:
-    console:
-      enabled: true
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+logging:
+  level:
+    org.hibernate.SQL: debug

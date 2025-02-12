@@ -37,20 +37,13 @@ public class NotificationConfigManager {
                 () -> new IllegalArgumentException("Notification config not found"));
         updateConfig.updateConfig(notificationConfig);
         notificationConfigRepository.save(updateConfig);
-        notificationConfigMap.replace(notificationConfig.getId(), notificationConfig);
+        notificationConfigMap.put(notificationConfig.getId(), notificationConfig);
         return updateConfig.getId();
     }
 
     public void deleteConfig(Long notificationId) {
         notificationConfigRepository.deleteById(notificationId);
         notificationConfigMap.remove(notificationId);
-    }
-
-    public NotificationConfig getConfig(String channel) {
-        return notificationConfigMap.values().stream()
-                .filter(config -> config.getChannel().equals(channel))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Notification config not found"));
     }
 
     public List<NotificationConfig> getConfigList() {

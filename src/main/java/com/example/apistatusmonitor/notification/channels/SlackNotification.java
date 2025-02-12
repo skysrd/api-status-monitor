@@ -2,24 +2,30 @@ package com.example.apistatusmonitor.notification.channels;
 
 import com.example.apistatusmonitor.config.NotificationConfig;
 import com.example.apistatusmonitor.config.NotificationConfigManager;
+import com.slack.api.Slack;
+import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+
 
 @Component
 public class SlackNotification implements NotificationChannel {
     private final NotificationConfig config;
-    private final RestTemplate restTemplate = new RestTemplate();
 
     public SlackNotification(NotificationConfigManager notificationConfigManager) {
-        this.config = notificationConfigManager.getConfig("slack");
+        this.config = null; // notificationConfigManager.getSlackConfig();
     }
 
     @Override
     public void sendNotification(String message) {
+        Slack slack = Slack.getInstance();
+
+        ChatPostMessageRequest request = ChatPostMessageRequest.builder()
+                .channel(config.getSlackChannelId())
+                .text(message)
+                .build();
 
         String templateMessage = String.format(config.getNotificationTemplate(), message);
 
-        // Send slack notification
-        restTemplate.postForEntity(config.getNotificationEndpoint(), templateMessage, String.class);
+        //TODO: Implement sending message to slack
     }
 }
