@@ -1,8 +1,8 @@
 package com.example.apistatusmonitor.admin;
 
-import com.example.apistatusmonitor.config.ApiConfig;
-import com.example.apistatusmonitor.config.DBConfig;
-import com.example.apistatusmonitor.config.NotificationConfig;
+import com.example.apistatusmonitor.monitoring.config.ApiMonitoringConfig;
+import com.example.apistatusmonitor.monitoring.config.DBMonitoringConfig;
+import com.example.apistatusmonitor.notification.config.NotificationConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,22 +22,22 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/api")
-    public ResponseEntity<List<ApiConfig>> getApiConfigList() {
+    public ResponseEntity<List<ApiMonitoringConfig>> getApiConfigList() {
         log.info("Getting API config list");
         return ResponseEntity.ok(adminService.getApiConfigList());
     }
 
     @PutMapping("/api/{config-id}")
     public ResponseEntity<Long> updateApiConfig(@PathVariable("config-id") Long configId,
-                                             @RequestBody ApiConfig apiConfig) {
+                                             @RequestBody ApiMonitoringConfig apiMonitoringConfig) {
         log.info("Updating API config with id: {}", configId);
-        return ResponseEntity.ok(adminService.updateApiConfig(configId, apiConfig));
+        return ResponseEntity.ok(adminService.updateApiConfig(configId, apiMonitoringConfig));
     }
 
     @PostMapping("/api")
-    public ResponseEntity<Long> addApiConfig(@RequestBody ApiConfig apiConfig) {
+    public ResponseEntity<Long> addApiConfig(@RequestBody ApiMonitoringConfig apiMonitoringConfig) {
         log.info("Adding new API config");
-        return ResponseEntity.ok(adminService.addApiConfig(apiConfig));
+        return ResponseEntity.ok(adminService.addApiConfig(apiMonitoringConfig));
     }
 
     @DeleteMapping("/api/{config-id}")
@@ -75,7 +75,7 @@ public class AdminController {
     }
 
     @GetMapping("/db")
-    public ResponseEntity<List<DBConfig>>getDbConfigList() {
+    public ResponseEntity<List<DBMonitoringConfig>>getDbConfigList() {
         log.info("Getting DB config list");
         return ResponseEntity.ok(adminService.getDbConfigList());
     }
@@ -83,14 +83,14 @@ public class AdminController {
     @PutMapping("/db/{config-id}")
     public ResponseEntity<?> updateDbConfig(
             @PathVariable("config-id") Long configId,
-            @RequestBody DBConfig dbConfig) {
+            @RequestBody DBMonitoringConfig dbMonitoringConfig) {
         log.info("Updating DB config");
-        return ResponseEntity.ok(adminService.updateDbConfig(configId, dbConfig));
+        return ResponseEntity.ok(adminService.updateDbConfig(configId, dbMonitoringConfig));
     }
 
     @PostMapping("/db")
-    public ResponseEntity<?> addDbConfig(@RequestBody DBConfig dbConfig) {
-        return ResponseEntity.ok(adminService.addDbConfig(dbConfig));
+    public ResponseEntity<?> addDbConfig(@RequestBody DBMonitoringConfig dbMonitoringConfig) {
+        return ResponseEntity.ok(adminService.addDbConfig(dbMonitoringConfig));
     }
 
     @DeleteMapping("/db/{config-id}")

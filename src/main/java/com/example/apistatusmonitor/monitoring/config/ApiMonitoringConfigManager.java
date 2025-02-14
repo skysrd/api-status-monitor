@@ -1,6 +1,6 @@
-package com.example.apistatusmonitor.config;
+package com.example.apistatusmonitor.monitoring.config;
 
-import com.example.apistatusmonitor.config.repository.ApiConfigRepository;
+import com.example.apistatusmonitor.monitoring.config.repository.ApiMonitoringConfigRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,9 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @RequiredArgsConstructor
-public class ApiConfigManager {
-    private final ConcurrentHashMap<Long, ApiConfig> apiConfigMap = new ConcurrentHashMap<>();
-    private final ApiConfigRepository apiConfigRepository;
+public class ApiMonitoringConfigManager {
+    private final ConcurrentHashMap<Long, ApiMonitoringConfig> apiConfigMap = new ConcurrentHashMap<>();
+    private final ApiMonitoringConfigRepository apiMonitoringConfigRepository;
 
     @PostConstruct
     public void init() {
@@ -22,25 +22,25 @@ public class ApiConfigManager {
 
     public void loadConfig() {
         apiConfigMap.clear();
-        apiConfigRepository.findAll()
+        apiMonitoringConfigRepository.findAll()
                 .forEach(apiConfig ->
                         apiConfigMap.put(apiConfig.getId(), apiConfig));
     }
 
-    public Long addConfig(ApiConfig apiConfig) {
-        ApiConfig savedConfig = apiConfigRepository.save(apiConfig);
+    public Long addConfig(ApiMonitoringConfig apiMonitoringConfig) {
+        ApiMonitoringConfig savedConfig = apiMonitoringConfigRepository.save(apiMonitoringConfig);
         apiConfigMap.put(savedConfig.getId(), savedConfig);
         return savedConfig.getId();
     }
 
-    public Long updateConfig(Long configId, ApiConfig newConfigData) {
+    public Long updateConfig(Long configId, ApiMonitoringConfig newConfigData) {
         // 기존 설정을 조회하고, 없으면 예외 발생 (에러 메시지에 configId 포함)
-        ApiConfig existingConfig = apiConfigRepository.findById(configId)
+        ApiMonitoringConfig existingConfig = apiMonitoringConfigRepository.findById(configId)
                 .orElseThrow(() -> new IllegalArgumentException("API config not found with id: " + configId));
 
         // 기존 엔티티의 값 업데이트 (필요한 필드만 업데이트하도록 메서드 내부 구현)
         existingConfig.updateConfig(newConfigData);
-        apiConfigRepository.save(existingConfig);
+        apiMonitoringConfigRepository.save(existingConfig);
 
         // 업데이트된 엔티티 저장 후 반환
         apiConfigMap.put(existingConfig.getId(), existingConfig);
@@ -50,11 +50,11 @@ public class ApiConfigManager {
 
 
     public void deleteConfig(Long apiId) {
-        apiConfigRepository.deleteById(apiId);
+        apiMonitoringConfigRepository.deleteById(apiId);
         apiConfigMap.remove(apiId);
     }
 
-    public List<ApiConfig> getConfigList() {
+    public List<ApiMonitoringConfig> getConfigList() {
         return new ArrayList<>(apiConfigMap.values());
     }
 }

@@ -1,8 +1,10 @@
 package com.example.apistatusmonitor.admin;
 
-import com.example.apistatusmonitor.config.ApiConfig;
-import com.example.apistatusmonitor.config.DBConfig;
-import com.example.apistatusmonitor.config.NotificationConfig;
+import com.example.apistatusmonitor.monitoring.config.ApiMonitoringConfig;
+import com.example.apistatusmonitor.monitoring.config.DBMonitoringConfig;
+import com.example.apistatusmonitor.notification.config.NotificationConfig;
+import com.example.apistatusmonitor.notification.config.SMSNotificationConfig;
+import com.example.apistatusmonitor.notification.config.SlackNotificationConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class AdminControllerTest {
@@ -31,30 +33,30 @@ class AdminControllerTest {
 
     @Test
     void getApiConfigList() {
-        List<ApiConfig> mockList = List.of(new ApiConfig());
+        List<ApiMonitoringConfig> mockList = List.of(new ApiMonitoringConfig());
         when(adminService.getApiConfigList()).thenReturn(mockList);
 
-        ResponseEntity<List<ApiConfig>> response = adminController.getApiConfigList();
+        ResponseEntity<List<ApiMonitoringConfig>> response = adminController.getApiConfigList();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockList, response.getBody());
     }
 
     @Test
     void updateApiConfig() {
-        ApiConfig apiConfig = new ApiConfig();
-        when(adminService.updateApiConfig(1L, apiConfig)).thenReturn(1L);
+        ApiMonitoringConfig apiMonitoringConfig = new ApiMonitoringConfig();
+        when(adminService.updateApiConfig(1L, apiMonitoringConfig)).thenReturn(1L);
 
-        ResponseEntity<Long> response = adminController.updateApiConfig(1L, apiConfig);
+        ResponseEntity<Long> response = adminController.updateApiConfig(1L, apiMonitoringConfig);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1L, response.getBody());
     }
 
     @Test
     void addApiConfig() {
-        ApiConfig apiConfig = new ApiConfig();
-        when(adminService.addApiConfig(apiConfig)).thenReturn(1L);
+        ApiMonitoringConfig apiMonitoringConfig = new ApiMonitoringConfig();
+        when(adminService.addApiConfig(apiMonitoringConfig)).thenReturn(1L);
 
-        ResponseEntity<Long> response = adminController.addApiConfig(apiConfig);
+        ResponseEntity<Long> response = adminController.addApiConfig(apiMonitoringConfig);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1L, response.getBody());
     }
@@ -70,7 +72,11 @@ class AdminControllerTest {
 
     @Test
     void getNotificationConfigList() {
-        List<NotificationConfig> mockList = List.of(new NotificationConfig());
+        NotificationConfig config1 = new SlackNotificationConfig();
+        config1.setId(1L);
+        NotificationConfig config2 = new SMSNotificationConfig();
+        config2.setId(2L);
+        List<NotificationConfig> mockList = List.of(config1, config2);
         when(adminService.getNotificationConfigList()).thenReturn(mockList);
 
         ResponseEntity<List<NotificationConfig>> response = adminController.getNotificationConfigList();
@@ -80,7 +86,7 @@ class AdminControllerTest {
 
     @Test
     void updateNotificationConfig() {
-        NotificationConfig notificationConfig = new NotificationConfig();
+        NotificationConfig notificationConfig = new SlackNotificationConfig();
         when(adminService.updateNotificationConfig(1L, notificationConfig)).thenReturn(1L);
 
         ResponseEntity<Long> response = adminController.updateNotificationConfig(1L, notificationConfig);
@@ -90,7 +96,7 @@ class AdminControllerTest {
 
     @Test
     void addNotificationConfig() {
-        NotificationConfig notificationConfig = new NotificationConfig();
+        NotificationConfig notificationConfig = new SlackNotificationConfig();
         when(adminService.addNotificationConfig(notificationConfig)).thenReturn(1L);
 
         ResponseEntity<Long> response = adminController.addNotificationConfig(notificationConfig);
@@ -109,33 +115,33 @@ class AdminControllerTest {
 
     @Test
     void getDbConfigList() {
-        List<DBConfig> mockList = List.of(new DBConfig());
+        List<DBMonitoringConfig> mockList = List.of(new DBMonitoringConfig());
         when(adminService.getDbConfigList()).thenReturn(mockList);
 
-        ResponseEntity<List<DBConfig>> response = adminController.getDbConfigList();
+        ResponseEntity<List<DBMonitoringConfig>> response = adminController.getDbConfigList();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockList, response.getBody());
     }
 
     @Test
     void updateDbConfig() {
-        DBConfig dbConfig = new DBConfig();
-        dbConfig.setId(1L);
-        doNothing().when(adminService).updateDbConfig(1L, dbConfig);
+        DBMonitoringConfig dbMonitoringConfig = new DBMonitoringConfig();
+        dbMonitoringConfig.setId(1L);
+        doReturn(dbMonitoringConfig.getId()).when(adminService).updateDbConfig(1L, dbMonitoringConfig);
 
-        ResponseEntity<?> response = adminController.updateDbConfig(1L, dbConfig);
+        ResponseEntity<?> response = adminController.updateDbConfig(1L, dbMonitoringConfig);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNull(response.getBody());
+        assertEquals(dbMonitoringConfig.getId(), response.getBody());
     }
 
     @Test
     void addDbConfig() {
-        DBConfig dbConfig = new DBConfig();
-        doNothing().when(adminService).addDbConfig(dbConfig);
+        DBMonitoringConfig dbMonitoringConfig = new DBMonitoringConfig();
+        doReturn(dbMonitoringConfig.getId()).when(adminService).addDbConfig(dbMonitoringConfig);
 
-        ResponseEntity<?> response = adminController.addDbConfig(dbConfig);
+        ResponseEntity<?> response = adminController.addDbConfig(dbMonitoringConfig);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNull(response.getBody());
+        assertEquals(dbMonitoringConfig.getId(), response.getBody());
     }
 
     @Test

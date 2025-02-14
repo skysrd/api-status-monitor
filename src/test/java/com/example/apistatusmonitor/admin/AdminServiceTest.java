@@ -1,6 +1,13 @@
 package com.example.apistatusmonitor.admin;
 
-import com.example.apistatusmonitor.config.*;
+import com.example.apistatusmonitor.monitoring.config.ApiMonitoringConfig;
+import com.example.apistatusmonitor.monitoring.config.ApiMonitoringConfigManager;
+import com.example.apistatusmonitor.monitoring.config.DBMonitoringConfig;
+import com.example.apistatusmonitor.monitoring.config.DBMonitoringConfigManager;
+import com.example.apistatusmonitor.notification.config.NotificationConfig;
+import com.example.apistatusmonitor.notification.manager.NotificationConfigManager;
+import com.example.apistatusmonitor.notification.config.SMSNotificationConfig;
+import com.example.apistatusmonitor.notification.config.SlackNotificationConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -9,19 +16,19 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class AdminServiceTest {
 
     @Mock
-    private ApiConfigManager apiConfigManager;
+    private ApiMonitoringConfigManager apiMonitoringConfigManager;
 
     @Mock
     private NotificationConfigManager notificationConfigManager;
 
     @Mock
-    private DBConfigManager dbConfigManager;
+    private DBMonitoringConfigManager dbMonitoringConfigManager;
 
     @InjectMocks
     private AdminService adminService;
@@ -33,43 +40,47 @@ class AdminServiceTest {
 
     @Test
     void getApiConfigList() {
-        List<ApiConfig> mockList = List.of(new ApiConfig());
-        when(apiConfigManager.getConfigList()).thenReturn(mockList);
+        List<ApiMonitoringConfig> mockList = List.of(new ApiMonitoringConfig());
+        when(apiMonitoringConfigManager.getConfigList()).thenReturn(mockList);
 
-        List<ApiConfig> result = adminService.getApiConfigList();
+        List<ApiMonitoringConfig> result = adminService.getApiConfigList();
         assertEquals(mockList, result);
     }
 
     @Test
     void addApiConfig() {
-        ApiConfig apiConfig = new ApiConfig();
-        when(apiConfigManager.addConfig(apiConfig)).thenReturn(1L);
+        ApiMonitoringConfig apiMonitoringConfig = new ApiMonitoringConfig();
+        when(apiMonitoringConfigManager.addConfig(apiMonitoringConfig)).thenReturn(1L);
 
-        Long result = adminService.addApiConfig(apiConfig);
+        Long result = adminService.addApiConfig(apiMonitoringConfig);
         assertEquals(1L, result);
     }
 
     @Test
     void updateApiConfig() {
-        ApiConfig apiConfig = new ApiConfig();
-        apiConfig.setId(1L);
-        when(apiConfigManager.updateConfig(1L, apiConfig)).thenReturn(1L);
+        ApiMonitoringConfig apiMonitoringConfig = new ApiMonitoringConfig();
+        apiMonitoringConfig.setId(1L);
+        when(apiMonitoringConfigManager.updateConfig(1L, apiMonitoringConfig)).thenReturn(1L);
 
-        Long result = adminService.updateApiConfig(1L, apiConfig);
+        Long result = adminService.updateApiConfig(1L, apiMonitoringConfig);
         assertEquals(1L, result);
     }
 
     @Test
     void deleteApiConfig() {
-        doNothing().when(apiConfigManager).deleteConfig(1L);
+        doNothing().when(apiMonitoringConfigManager).deleteConfig(1L);
 
         adminService.deleteApiConfig(1L);
-        verify(apiConfigManager, times(1)).deleteConfig(1L);
+        verify(apiMonitoringConfigManager, times(1)).deleteConfig(1L);
     }
 
     @Test
     void getNotificationConfigList() {
-        List<NotificationConfig> mockList = List.of(new NotificationConfig());
+        NotificationConfig config1 = new SlackNotificationConfig();
+        config1.setId(1L);
+        NotificationConfig config2 = new SMSNotificationConfig();
+        config2.setId(2L);
+        List<NotificationConfig> mockList = List.of(config1, config2);
         when(notificationConfigManager.getConfigList()).thenReturn(mockList);
 
         List<NotificationConfig> result = adminService.getNotificationConfigList();
@@ -78,7 +89,7 @@ class AdminServiceTest {
 
     @Test
     void addNotificationConfig() {
-        NotificationConfig notificationConfig = new NotificationConfig();
+        NotificationConfig notificationConfig = new SlackNotificationConfig();
         when(notificationConfigManager.addConfig(notificationConfig)).thenReturn(1L);
 
         Long result = adminService.addNotificationConfig(notificationConfig);
@@ -87,7 +98,7 @@ class AdminServiceTest {
 
     @Test
     void updateNotificationConfig() {
-        NotificationConfig notificationConfig = new NotificationConfig();
+        NotificationConfig notificationConfig = new SlackNotificationConfig();
         when(notificationConfigManager.updateConfig(1L, notificationConfig)).thenReturn(1L);
 
         Long result = adminService.updateNotificationConfig(1L, notificationConfig);
@@ -104,37 +115,36 @@ class AdminServiceTest {
 
     @Test
     void getDbConfigList() {
-        List<DBConfig> mockList = List.of(new DBConfig());
-        when(dbConfigManager.getConfigList()).thenReturn(mockList);
+        List<DBMonitoringConfig> mockList = List.of(new DBMonitoringConfig());
+        when(dbMonitoringConfigManager.getConfigList()).thenReturn(mockList);
 
-        List<DBConfig> result = adminService.getDbConfigList();
+        List<DBMonitoringConfig> result = adminService.getDbConfigList();
         assertEquals(mockList, result);
     }
 
     @Test
     void addDbConfig() {
-        DBConfig dbConfig = new DBConfig();
-        doNothing().when(dbConfigManager).addConfig(dbConfig);
-
-        DBConfig result = adminService.addDbConfig(dbConfig);
-        assertNull(result);
+        DBMonitoringConfig dbMonitoringConfig = new DBMonitoringConfig();
+        doReturn(1L).when(dbMonitoringConfigManager).addConfig(dbMonitoringConfig);
+        Long result = adminService.addDbConfig(dbMonitoringConfig);
+        assertEquals(1L, result);
     }
 
     @Test
     void updateDbConfig() {
-        DBConfig dbConfig = new DBConfig();
-        dbConfig.setId(1L);
-        doReturn(dbConfig).when(dbConfigManager).updateConfig(1L, dbConfig);
+        DBMonitoringConfig dbMonitoringConfig = new DBMonitoringConfig();
+        dbMonitoringConfig.setId(1L);
+        doReturn(1L).when(dbMonitoringConfigManager).updateConfig(1L, dbMonitoringConfig);
 
-        DBConfig result = adminService.updateDbConfig(1L, dbConfig);
-        assertEquals(dbConfig, result);
+        Long result = adminService.updateDbConfig(1L, dbMonitoringConfig);
+        assertEquals(1L, result);
     }
 
     @Test
     void deleteDbConfig() {
-        doNothing().when(dbConfigManager).deleteConfig(1L);
+        doNothing().when(dbMonitoringConfigManager).deleteConfig(1L);
 
         adminService.deleteDbConfig(1L);
-        verify(dbConfigManager, times(1)).deleteConfig(1L);
+        verify(dbMonitoringConfigManager, times(1)).deleteConfig(1L);
     }
 }

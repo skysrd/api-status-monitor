@@ -1,6 +1,8 @@
 package com.example.apistatusmonitor.admin;
 
-import com.example.apistatusmonitor.config.*;
+import com.example.apistatusmonitor.monitoring.config.*;
+import com.example.apistatusmonitor.notification.config.NotificationConfig;
+import com.example.apistatusmonitor.notification.manager.NotificationConfigManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,27 +16,27 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AdminService {
-    private final ApiConfigManager apiConfigManager;
+    private final ApiMonitoringConfigManager apiMonitoringConfigManager;
     private final NotificationConfigManager notificationConfigManager;
-    private final DBConfigManager dbConfigManager;
+    private final DBMonitoringConfigManager dbMonitoringConfigManager;
 
-    public List<ApiConfig> getApiConfigList() {
-        return apiConfigManager.getConfigList();
+    public List<ApiMonitoringConfig> getApiConfigList() {
+        return apiMonitoringConfigManager.getConfigList();
     }
 
     @Transactional
-    public Long addApiConfig(ApiConfig apiConfig) {
-        return apiConfigManager.addConfig(apiConfig);
+    public Long addApiConfig(ApiMonitoringConfig apiMonitoringConfig) {
+        return apiMonitoringConfigManager.addConfig(apiMonitoringConfig);
     }
 
     @Transactional
-    public Long updateApiConfig(Long configId, ApiConfig apiConfig) {
-        return apiConfigManager.updateConfig(configId, apiConfig);
+    public Long updateApiConfig(Long configId, ApiMonitoringConfig apiMonitoringConfig) {
+        return apiMonitoringConfigManager.updateConfig(configId, apiMonitoringConfig);
     }
 
     @Transactional
     public void deleteApiConfig(Long apiId) {
-        apiConfigManager.deleteConfig(apiId);
+        apiMonitoringConfigManager.deleteConfig(apiId);
     }
 
     public List<NotificationConfig> getNotificationConfigList() {
@@ -56,22 +58,22 @@ public class AdminService {
         notificationConfigManager.deleteConfig(notificationId);
     }
 
-    public List<DBConfig> getDbConfigList() {
-        return dbConfigManager.getConfigList();
+    public List<DBMonitoringConfig> getDbConfigList() {
+        return dbMonitoringConfigManager.getConfigList();
     }
 
     @Transactional
-    public DBConfig addDbConfig(DBConfig dbConfig) {
-        dbConfigManager.addConfig(dbConfig);
-        return null;
+    public Long addDbConfig(DBMonitoringConfig dbMonitoringConfig) {
+        return dbMonitoringConfigManager.addConfig(dbMonitoringConfig);
     }
 
-    public DBConfig updateDbConfig(Long configId, DBConfig dbConfig) {
-        dbConfigManager.updateConfig(configId, dbConfig);
-        return null;
+    @Transactional
+    public Long updateDbConfig(Long configId, DBMonitoringConfig dbMonitoringConfig) {
+        return dbMonitoringConfigManager.updateConfig(configId, dbMonitoringConfig);
     }
 
+    @Transactional
     public void deleteDbConfig(Long dbId) {
-        dbConfigManager.deleteConfig(dbId);
+        dbMonitoringConfigManager.deleteConfig(dbId);
     }
 }

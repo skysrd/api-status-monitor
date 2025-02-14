@@ -1,8 +1,8 @@
 package com.example.apistatusmonitor.integration;
 
-import com.example.apistatusmonitor.config.ApiConfig;
-import com.example.apistatusmonitor.config.ApiConfigManager;
-import com.example.apistatusmonitor.config.repository.ApiConfigRepository;
+import com.example.apistatusmonitor.monitoring.config.ApiMonitoringConfig;
+import com.example.apistatusmonitor.monitoring.config.ApiMonitoringConfigManager;
+import com.example.apistatusmonitor.monitoring.config.repository.ApiMonitoringConfigRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,10 +37,10 @@ public class AdminControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ApiConfigRepository apiConfigRepository;
+    private ApiMonitoringConfigRepository apiMonitoringConfigRepository;
 
     @Autowired
-    private ApiConfigManager apiConfigManager;
+    private ApiMonitoringConfigManager apiMonitoringConfigManager;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -48,21 +48,21 @@ public class AdminControllerIntegrationTest {
     @BeforeEach
     public void setUp() {
         // 기존 데이터 삭제
-        apiConfigRepository.deleteAll();
-        apiConfigRepository.flush();
+        apiMonitoringConfigRepository.deleteAll();
+        apiMonitoringConfigRepository.flush();
 
-        // 샘플 API 설정 데이터를 저장 (자동 생성 ID 사용)
-        ApiConfig apiConfig1 = new ApiConfig();
-        apiConfig1.setName("API One");
+        // 샘플 API 설정 데이터를 저장
+        ApiMonitoringConfig apiMonitoringConfig1 = new ApiMonitoringConfig();
+        apiMonitoringConfig1.setName("API One");
         // 필요한 다른 필드도 설정
 
-        ApiConfig apiConfig2 = new ApiConfig();
-        apiConfig2.setName("API Two");
+        ApiMonitoringConfig apiMonitoringConfig2 = new ApiMonitoringConfig();
+        apiMonitoringConfig2.setName("API Two");
         // 필요한 다른 필드도 설정
 
-        List<ApiConfig> savedConfigs = apiConfigRepository.saveAll(List.of(apiConfig1, apiConfig2));
+        List<ApiMonitoringConfig> savedConfigs = apiMonitoringConfigRepository.saveAll(List.of(apiMonitoringConfig1, apiMonitoringConfig2));
 
-        apiConfigManager.loadConfig();
+        apiMonitoringConfigManager.loadConfig();
     }
 
     // 1. API Config 조회 테스트 (순서에 의존하지 않는 검증)
@@ -82,12 +82,12 @@ public class AdminControllerIntegrationTest {
     @Test
     public void testUpdateApiConfig() throws Exception {
         // "API One" 이름을 가진 기존 API Config 엔티티를 조회
-        ApiConfig existingConfig = apiConfigRepository.findByName("API One")
+        ApiMonitoringConfig existingConfig = apiMonitoringConfigRepository.findByName("API One")
                 .orElseThrow(() -> new IllegalArgumentException("API One not found"));
         Long expectedId = existingConfig.getId();
 
         // 업데이트할 데이터 생성 (이름만 변경)
-        ApiConfig updatedConfig = new ApiConfig();
+        ApiMonitoringConfig updatedConfig = new ApiMonitoringConfig();
         updatedConfig.setName("Updated API One");
 
         // PUT 요청을 수행하고, 반환된 ID가 expectedId와 일치하는지 검증
@@ -103,10 +103,10 @@ public class AdminControllerIntegrationTest {
         @Test
         public void testAddApiConfig() throws Exception {
             // 현재 저장된 API Config의 개수를 확인
-            long countBefore = apiConfigRepository.count();
+            long countBefore = apiMonitoringConfigRepository.count();
 
             // 새로운 API Config 생성 (ID는 자동 생성되도록 설정)
-            ApiConfig newConfig = new ApiConfig();
+            ApiMonitoringConfig newConfig = new ApiMonitoringConfig();
             newConfig.setName("New API");
 
             // POST 요청 수행하여 새로운 API Config 추가
@@ -120,7 +120,7 @@ public class AdminControllerIntegrationTest {
             Long newId = Long.valueOf(response);
 
             // Repository의 API Config 개수가 1 증가했는지 확인
-            long countAfter = apiConfigRepository.count();
+            long countAfter = apiMonitoringConfigRepository.count();
             assertEquals(countBefore + 1, countAfter, "API Config가 하나 추가되어야 합니다.");
 
             // GET 요청으로 전체 API Config 목록을 조회하고, JSON 배열의 크기가 Repository의 개수와 일치하는지 검증
