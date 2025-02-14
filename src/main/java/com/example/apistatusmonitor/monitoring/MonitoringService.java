@@ -1,5 +1,7 @@
 package com.example.apistatusmonitor.monitoring;
 
+import com.example.apistatusmonitor.event.EventPublisher;
+import com.example.apistatusmonitor.event.MonitoringAnomalyEvent;
 import com.example.apistatusmonitor.monitoring.config.ApiMonitoringConfig;
 import com.example.apistatusmonitor.monitoring.config.DBMonitoringConfig;
 import com.example.apistatusmonitor.monitoring.config.MonitoringConfig;
@@ -12,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 @RequiredArgsConstructor
 public class MonitoringService {
+    private final EventPublisher eventPublisher;
     private final WebClient.Builder webClientBuilder;
     private WebClient webClient;
     private final JdbcTemplate jdbcTemplate;
@@ -60,6 +63,8 @@ public class MonitoringService {
             result.setResponseTime(elapsedTime);
             result.setStatus("FAILURE");
             result.setErrorMessage(e.getMessage());
+
+            eventPublisher.publishMonitorResultEvent(new MonitoringAnomalyEvent(result));
         }
 
         return result;
@@ -90,6 +95,8 @@ public class MonitoringService {
             result.setResponseTime(elapsedTime);
             result.setStatus("FAILURE");
             result.setErrorMessage(e.getMessage());
+
+            eventPublisher.publishMonitorResultEvent(new MonitoringAnomalyEvent(result));
         }
         return result;
     }

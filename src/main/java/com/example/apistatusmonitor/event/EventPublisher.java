@@ -11,7 +11,7 @@ public class EventPublisher {
         this.publisher = publisher;
     }
 
-    public void publishMonitorResultEvent(MonitorResultEvent event) {
+    public void publishMonitorResultEvent(MonitoringAnomalyEvent event) {
         publisher.publishEvent(event);
     }
 }
