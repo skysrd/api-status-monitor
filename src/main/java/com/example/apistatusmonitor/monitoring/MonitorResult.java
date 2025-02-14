@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class MonitorResult {
-    private Long apiConfigId;
+    private Long configId;
     private LocalDateTime timestamp;
     private String status;       // "SUCCESS" 또는 "FAILURE"
     private long responseTime;   // 밀리초 단위 응답 시간
