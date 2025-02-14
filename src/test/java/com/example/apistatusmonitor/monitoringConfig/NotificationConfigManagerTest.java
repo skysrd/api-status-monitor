@@ -1,6 +1,10 @@
-package com.example.apistatusmonitor.config;
+package com.example.apistatusmonitor.monitoringConfig;
 
-import com.example.apistatusmonitor.config.repository.NotificationConfigRepository;
+import com.example.apistatusmonitor.notification.config.NotificationConfig;
+import com.example.apistatusmonitor.notification.manager.NotificationConfigManager;
+import com.example.apistatusmonitor.notification.repository.NotificationConfigRepository;
+import com.example.apistatusmonitor.notification.config.SMSNotificationConfig;
+import com.example.apistatusmonitor.notification.config.SlackNotificationConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,9 +33,9 @@ class NotificationConfigManagerTest {
     @Test
     void init() {
         // Given
-        NotificationConfig config1 = new NotificationConfig();
+        NotificationConfig config1 = new SlackNotificationConfig();
         config1.setId(1L);
-        NotificationConfig config2 = new NotificationConfig();
+        NotificationConfig config2 = new SMSNotificationConfig();
         config2.setId(2L);
         List<NotificationConfig> configs = List.of(config1, config2);
         when(notificationConfigRepository.findAll()).thenReturn(configs);
@@ -49,9 +53,9 @@ class NotificationConfigManagerTest {
     @Test
     void loadConfig() {
         // Given
-        NotificationConfig config1 = new NotificationConfig();
+        NotificationConfig config1 = new SlackNotificationConfig();
         config1.setId(1L);
-        NotificationConfig config2 = new NotificationConfig();
+        NotificationConfig config2 = new SMSNotificationConfig();
         config2.setId(2L);
         List<NotificationConfig> mockList = List.of(config1, config2);
         when(notificationConfigRepository.findAll()).thenReturn(mockList);
@@ -69,7 +73,7 @@ class NotificationConfigManagerTest {
     @Test
     void addConfig() {
         // Given
-        NotificationConfig config = new NotificationConfig();
+        NotificationConfig config = new SlackNotificationConfig();
         config.setId(1L);
         when(notificationConfigRepository.save(config)).thenReturn(config);
 
@@ -86,12 +90,12 @@ class NotificationConfigManagerTest {
     @Test
     void updateConfig() {
         // Given
-        NotificationConfig existingConfig = new NotificationConfig();
+        NotificationConfig existingConfig = new SlackNotificationConfig();
         existingConfig.setId(1L);
         existingConfig.setName("Old Config");
         when(notificationConfigRepository.findById(1L)).thenReturn(Optional.of(existingConfig));
 
-        NotificationConfig newConfig = new NotificationConfig();
+        NotificationConfig newConfig = new SlackNotificationConfig();
         newConfig.setId(1L);
         newConfig.setName("New Config");
 
@@ -130,9 +134,9 @@ class NotificationConfigManagerTest {
     @Test
     void getConfigList() {
         // Given
-        NotificationConfig config1 = new NotificationConfig();
+        NotificationConfig config1 = new SlackNotificationConfig();
         config1.setId(1L);
-        NotificationConfig config2 = new NotificationConfig();
+        NotificationConfig config2 = new SMSNotificationConfig();
         config2.setId(2L);
         List<NotificationConfig> configs = List.of(config1, config2);
         when(notificationConfigRepository.findAll()).thenReturn(configs);

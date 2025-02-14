@@ -1,6 +1,7 @@
-package com.example.apistatusmonitor.config;
+package com.example.apistatusmonitor.notification.manager;
 
-import com.example.apistatusmonitor.config.repository.NotificationConfigRepository;
+import com.example.apistatusmonitor.notification.repository.NotificationConfigRepository;
+import com.example.apistatusmonitor.notification.config.NotificationConfig;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

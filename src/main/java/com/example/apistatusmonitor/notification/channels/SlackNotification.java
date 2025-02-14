@@ -1,9 +1,8 @@
 package com.example.apistatusmonitor.notification.channels;
 
-import com.example.apistatusmonitor.config.NotificationConfig;
-import com.example.apistatusmonitor.config.NotificationConfigManager;
+import com.example.apistatusmonitor.notification.config.NotificationConfig;
+import com.example.apistatusmonitor.notification.manager.NotificationConfigManager;
 import com.slack.api.Slack;
-import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import org.springframework.stereotype.Component;
 
 
@@ -18,13 +17,6 @@ public class SlackNotification implements NotificationChannel {
     @Override
     public void sendNotification(String message) {
         Slack slack = Slack.getInstance();
-
-        ChatPostMessageRequest request = ChatPostMessageRequest.builder()
-                .channel(config.getSlackChannelId())
-                .text(message)
-                .build();
-
-        String templateMessage = String.format(config.getNotificationTemplate(), message);
 
         //TODO: Implement sending message to slack
     }
